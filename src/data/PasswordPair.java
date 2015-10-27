@@ -40,6 +40,7 @@ public class PasswordPair {
 
 			// Load the description, not encrypted.
 			byte[] description = ppair.description.getBytes("UTF-8");
+			dos.writeInt(description.length);
 			dos.write(description);
 
 			// Load the username and password, which are encrypted.
