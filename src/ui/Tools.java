@@ -17,12 +17,16 @@ public class Tools {
 	static {
 		Font.loadFont(ClassLoader.getSystemResourceAsStream("ui/Xolonium-Regular.otf"), 10);
 		Font.loadFont(ClassLoader.getSystemResourceAsStream("ui/Xolonium-Bold.otf"), 10);
+		Font.loadFont(ClassLoader.getSystemResourceAsStream("ui/nevis.ttf"), 10);
 	}
 
 	public static Font createBoldFont(double size, double sRatio) {
 		return Font.font("Xolonium", FontWeight.BOLD, size * sRatio);
 	}
-
+	public static Font createNevisFont(double size, double sRatio)
+	{
+		return Font.font("nevis",size*sRatio);	
+	}
 	public static Image createImage(String res) {
 		return new Image(ClassLoader.getSystemResourceAsStream("ui/" + res));
 	}
