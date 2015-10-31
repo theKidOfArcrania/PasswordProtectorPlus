@@ -90,8 +90,8 @@ public class PasswordProtector extends Application {
 		mainScreen = new Stage();
 		mainScreen.initStyle(StageStyle.TRANSPARENT);
 		mainScreen.initModality(Modality.WINDOW_MODAL);
-		mainScreen.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		mainScreen.setFullScreen(true);
+		mainScreen.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
 		AnchorPane root = new AnchorPane();
 		Scene scene = new Scene(root, dispWidth, dispHeight);
