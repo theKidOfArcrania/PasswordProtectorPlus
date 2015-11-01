@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import org.passwordprotector.PasswordInvalidException;
 import org.passwordprotector.PasswordPair;
@@ -45,6 +46,7 @@ import static java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment;
 public class PasswordProtector extends Application {
 
 	// Image loading and constant stuff.
+	private static final File accountFile = new File("accounts.dat");
 	private static final Image SCREW = Tools.createImage("screw.png");
 	private static final Image TEXT_IN = Tools.createImage("OverOn.png");
 	private static final Image TEXT_IN_PRESSED = Tools.createImage("ClickOn.png");
@@ -190,7 +192,9 @@ public class PasswordProtector extends Application {
 
 		close.setOnMousePressed(e -> {
 			try {
-				PasswordPair.saveAccounts(accountList, new File("accounts.out"), password);
+				PasswordPair.saveAccounts(accountList, accountFile, password);
+				// Hide file.
+				Files.setAttribute(accountFile.toPath(), "dos:hidden", true);
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
@@ -388,7 +392,7 @@ public class PasswordProtector extends Application {
 
 		try {
 			password = passwordField.getText().getBytes("UTF-8");
-			PasswordPair.loadAccounts(accountList, new File("accounts.out"), password);
+			PasswordPair.loadAccounts(accountList, accountFile, password);
 			info.setText("Valid Password!");
 			initMainScreen();
 		} catch (IOException e) {
