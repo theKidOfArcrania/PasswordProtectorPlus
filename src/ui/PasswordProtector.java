@@ -80,6 +80,9 @@ public class PasswordProtector extends Application {
 	private TextField addUser;
 	private TextField addPassword;
 	private TextField addDescription;
+	private Text errorUser;
+	private Text errorPassword;
+	private Text errorDescript;
 	private ImageView button;
 	private Text info;
 	private Text help;
@@ -89,6 +92,7 @@ public class PasswordProtector extends Application {
 	private Text passDisplay;
 	private static File accountsIn;
 	private static File accountsOut;
+	private ListView<PasswordPair> list;
 	private static ObservableList<PasswordPair> accountList;
 	private static SecretKeySpec keySpec = new SecretKeySpec(password.getBytes(), "AES");;
 	private static InputStream in;
@@ -300,7 +304,9 @@ public class PasswordProtector extends Application {
 		ImageView screw2 = Tools.createImageView(SCREW, 15, 15, 785, 0.0, sRatio, wRatio, hRatio, OUT);
 		ImageView screw3 = Tools.createImageView(SCREW, 15, 15, 1, 435, sRatio, wRatio, hRatio, OUT);
 		ImageView screw4 = Tools.createImageView(SCREW, 15, 15, 785,  435, sRatio, wRatio, hRatio, OUT);
+		//ImageView listViewDefault = Tools.createImageView(img, h, w, x, y, sRatio, wRatio, hRatio, g);
 		ImageView settings = Tools.createImageView(SETTINGS, 20, 20, 730, 1, sRatio, wRatio, hRatio, SMALL_SHADE);
+		settings.setOnMousePressed(e->reset());
 		
 		Text close = Tools.createText(770, 1, wRatio, hRatio, "X", Color.web("#2d7df1"), SMALL_SHADE, Tools.createNevisFont(18, sRatio));
 		Text minimize = Tools.createText(755, 5, wRatio, hRatio, "-", Color.web("#2d7df1"), SMALL_SHADE, Tools.createBoldFont(18, sRatio));
@@ -324,7 +330,7 @@ public class PasswordProtector extends Application {
 		});
 		
 		Rectangle panel = Tools.createRoundedRectangle(10, 20, 5, 5, 755, 0, sRatio, wRatio, hRatio, Color.rgb(100, 100, 100,0), null);
-		panel.setOnMousePressed(e->{mainScreen.setIconified(true);});
+		panel.setOnMousePressed(e->mainScreen.setIconified(true));
 		
 		Text username = Tools.createText(45, 347, wRatio, hRatio, "Username: ", Color.rgb(10, 10, 20), SMALL_SHADE, Tools.createNevisFont(20, sRatio));
 		Text password = Tools.createText(45, 377, wRatio, hRatio, "Password: ", Color.rgb(10, 10, 20), SMALL_SHADE, Tools.createNevisFont(20, sRatio));
@@ -358,8 +364,8 @@ public class PasswordProtector extends Application {
 		
 		Rectangle listFrame = Tools.createRoundedRectangle(350, 250, 2, 2, 20, 70, sRatio, wRatio, hRatio, Color.DARKGRAY.darker().darker(), OUT);
 		listFrame.setFill(new ImagePattern(SHINY_BACKGROUND));
-		ListView<PasswordPair> list = new ListView<PasswordPair>();
-		
+		list = new ListView<PasswordPair>();
+		list.setPlaceholder(null);
 		list.setItems(accountList);
 		list.setPrefWidth(340*wRatio);
 		list.setPrefHeight(240*hRatio);
@@ -375,7 +381,7 @@ public class PasswordProtector extends Application {
 			}
 		});
 		
-		Text addDescript = Tools.createText(495, 44, wRatio, hRatio, "Add New Account", Color.web("#2d7df1"), SMALL_SHADE, Tools.createNevisFont(22, sRatio));
+		Text addDescript = Tools.createText(500, 44, wRatio, hRatio, "Modify Accounts", Color.web("#2d7df1"), SMALL_SHADE, Tools.createNevisFont(22, sRatio));
 		
 		Text enterUsername = Tools.createText(465, 95, wRatio, hRatio, "Enter Username:", Color.BLACK, SMALL_SHADE, Tools.createNevisFont(18, sRatio));
 		Text enterPassword = Tools.createText(465, 170, wRatio, hRatio, "Enter Password:", Color.BLACK, SMALL_SHADE, Tools.createNevisFont(18, sRatio));
@@ -385,37 +391,79 @@ public class PasswordProtector extends Application {
 		addPassword = new TextField();
 		addDescription = new TextField();
 		
-		addUser.setLayoutX(465 * wRatio);
+		addUser.setLayoutX(450 * wRatio);
 		addUser.setLayoutY(120 * hRatio);
-		addUser.setPrefSize(240 * wRatio, 15 * hRatio);
+		addUser.setPrefSize(270 * wRatio, 15 * hRatio);
 		addUser.setFont(Tools.createNevisFont(14, sRatio));
 		addUser.setEffect(SMALL_SHADE);
 		
-		addPassword.setLayoutX(465 * wRatio);
+		addPassword.setLayoutX(450 * wRatio);
 		addPassword.setLayoutY(195 * hRatio);
-		addPassword.setPrefSize(240 * wRatio, 15 * hRatio);
+		addPassword.setPrefSize(270 * wRatio, 15 * hRatio);
 		addPassword.setFont(Tools.createNevisFont(14, sRatio));
 		addPassword.setEffect(SMALL_SHADE);
 		
-		addDescription.setLayoutX(465 * wRatio);
+		addDescription.setLayoutX(450 * wRatio);
 		addDescription.setLayoutY(270 * hRatio);
-		addDescription.setPrefSize(240 * wRatio, 15 * hRatio);
+		addDescription.setPrefSize(270 * wRatio, 15 * hRatio);
 		addDescription.setFont(Tools.createNevisFont(14, sRatio));
 		addDescription.setEffect(SMALL_SHADE);
 		
-		Rectangle addContainer = Tools.createRoundedRectangle(270, 340, 5, 5, 450, 72, sRatio, wRatio, hRatio, Color.DARKGRAY.darker().darker(), OUT);
+		Rectangle addContainer = Tools.createRoundedRectangle(300, 330, 5, 5, 435, 72, sRatio, wRatio, hRatio, Color.DARKGRAY.darker().darker(), OUT);
 		addContainer.setFill(new ImagePattern(SHINY_BACKGROUND));
 		
-		Rectangle createButton = Tools.createRoundedRectangle(200, 50, 5, 5, 465 , 345, sRatio, wRatio, hRatio, Color.DARKGRAY.darker().darker(), OUT);
-		Stop[] grad = { new Stop(0.0, Color.WHITE), new Stop(0.2, Color.web("#c4e0f4")), new Stop(.49, Color.web("#acd5f2")),
-				new Stop(.5, Color.web("#74b2dd")), new Stop(1.0, Color.web("#a9e1f7")) };
-		LinearGradient shieldGrad = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, grad);
-		createButton.setFill(shieldGrad);
+		Rectangle createButton = Tools.createRoundedRectangle(120, 40, 5, 5, 455 , 325, sRatio, wRatio, hRatio, Color.DARKGRAY.darker().darker(), OUT);
+		Rectangle removeButton = Tools.createRoundedRectangle(120, 40, 5, 5, 600 , 325, sRatio, wRatio, hRatio, Color.DARKGRAY.darker().darker(), OUT);
+		Text create = Tools.createText(475, 330, wRatio, hRatio, "Create", Color.WHITE, SMALL_SHADE, Tools.createNevisFont(24, sRatio));
+		Text remove = Tools.createText(623, 330, wRatio, hRatio, "Delete", Color.WHITE, SMALL_SHADE, Tools.createNevisFont(24, sRatio));
+		
+		create.setOnMousePressed(e->{
+			createButton.setEffect(LARGE_SHADE);
+			generateNewAccount();
+		});
+		create.setOnMouseReleased(e->{
+			createButton.setEffect(OUT);
+		});
+		createButton.setOnMousePressed(e->{
+			createButton.setEffect(LARGE_SHADE);
+			generateNewAccount();
+		});
+		createButton.setOnMouseReleased(e->{
+			createButton.setEffect(OUT);
+		});
+		remove.setOnMousePressed(e->{
+			removeButton.setEffect(LARGE_SHADE);
+		});
+		remove.setOnMouseReleased(e->{
+			removeButton.setEffect(OUT);
+		});
+
+		removeButton.setOnMousePressed(e->{
+			removeButton.setEffect(LARGE_SHADE);
+		});
+		removeButton.setOnMouseReleased(e->{
+			removeButton.setEffect(OUT);
+		});
+		
+		Stop[] grad1 = { new Stop(0.0, Color.web("#cdddf6")), new Stop(0.2, Color.web("#2d7df1")), new Stop(.45, Color.web("#2d7df1")),
+				new Stop(.55, Color.web("#1b61c8")), new Stop(1.0, Color.web("#3a75cb")) };
+		LinearGradient createGrad = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, grad1);
+		Stop[] grad2 = { new Stop(0.0, Color.web("caecf2")), new Stop(0.2, Color.web("#50d7f0")), new Stop(.45, Color.web("50d7f0")),
+				new Stop(.55, Color.web("#36b7cf")), new Stop(1.0, Color.web("#5fc7da")) };
+		LinearGradient removeGrad = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, grad2);
+		
+		removeButton.setFill(removeGrad);
+		createButton.setFill(createGrad);
+
+		errorUser = Tools.createText(610, 100, wRatio, hRatio, "", Color.web("d31414"), SMALL_SHADE, Tools.createNevisFont(10, sRatio));
+		errorPassword = Tools.createText(603, 175, wRatio, hRatio, "", Color.web("d31414"), SMALL_SHADE, Tools.createNevisFont(10, sRatio));
+		errorDescript = Tools.createText(620, 250, wRatio, hRatio, "", Color.web("d31414"), SMALL_SHADE, Tools.createNevisFont(10, sRatio));
+		
 		root.setBackground(new Background(BACK)); 
 		root.getChildren().addAll(screw1, screw2, screw3, screw4, settings, listFrame, list,c,q, display,username, userDisplay, password, 
-				passDisplay, addDescript, addContainer, enterUsername, enterPassword, enterDescription, addUser, addPassword, addDescription,viewDescript, name, close, minimize,
-				panel,createButton);
-
+				passDisplay, addDescript, addContainer, enterUsername, enterPassword, enterDescription, errorUser, errorPassword,errorDescript,
+				addUser, addPassword, addDescription,viewDescript, name, close, minimize, panel,createButton, create,removeButton,remove);
+		
 		mainScreen.setScene(scene); 
 		mainScreen.initOwner(loginScreen);
 		mainScreen.show();
@@ -464,14 +512,54 @@ public class PasswordProtector extends Application {
 		String tempUser = addUser.getText();
 		String tempPass = addPassword.getText();
 		String tempDescript = addDescription.getText();
-		
-		if(tempUser == ""||tempPass==""||tempDescript=="")
+		boolean check = true;
+		if(tempUser.equals(""))
 		{
-			
+			errorUser.setText("Enter a username");
+			check = false;
 		}
+		else
+		{
+			errorUser.setText("");
+		}
+		if(tempPass.equals(""))
+		{
+			errorPassword.setText("Enter a password");
+			check = false;
+		}
+		else
+		{
+			errorPassword.setText("");
+		}
+		if(tempDescript.equals(""))
+		{
+			errorDescript.setText("Enter a description");
+			check = false;
+		}
+		else
+		{
+			errorDescript.setText("");
+		}
+		if(!check)return;
+		
+		createAccount(tempDescript,tempUser,tempPass);
+		addUser.setText("");
+		addPassword.setText("");
+		addDescription.setText("");
+		refresh();
 	}
+	
 	public void reset()
 	{
-		accountsIn.delete();
+		accountList.clear();
+		System.out.println("reset");
+		refresh();
+	}
+	
+	public void refresh()
+	{
+		ObservableList<PasswordPair> temp = list.getItems();
+		list.setItems(null);
+		list.setItems(temp);
 	}
 }
