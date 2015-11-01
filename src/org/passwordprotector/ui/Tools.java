@@ -1,6 +1,5 @@
 package org.passwordprotector.ui;
 
-
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,20 +14,17 @@ import javafx.stage.Window;
 
 public class Tools {
 	static {
-		Font.loadFont(ClassLoader.getSystemResourceAsStream("ui/Xolonium-Regular.otf"), 10);
-		Font.loadFont(ClassLoader.getSystemResourceAsStream("ui/Xolonium-Bold.otf"), 10);
-		Font.loadFont(ClassLoader.getSystemResourceAsStream("ui/nevis.ttf"), 10);
+		Font.loadFont(ClassLoader.getSystemResourceAsStream("org/passwordprotector/ui/Xolonium-Regular.otf"), 10);
+		Font.loadFont(ClassLoader.getSystemResourceAsStream("org/passwordprotector/ui/Xolonium-Bold.otf"), 10);
+		Font.loadFont(ClassLoader.getSystemResourceAsStream("org/passwordprotector/ui/nevis.ttf"), 10);
 	}
 
 	public static Font createBoldFont(double size, double sRatio) {
 		return Font.font("Xolonium", FontWeight.BOLD, size * sRatio);
 	}
-	public static Font createNevisFont(double size, double sRatio)
-	{
-		return Font.font("nevis",size*sRatio);	
-	}
+
 	public static Image createImage(String res) {
-		return new Image(ClassLoader.getSystemResourceAsStream("ui/" + res));
+		return new Image(ClassLoader.getSystemResourceAsStream("org/passwordprotector/ui/" + res));
 	}
 
 	public static ImageView createImageView(Image img, double h, double w, double x, double y, double sRatio, double wRatio, double hRatio, Effect g) {
@@ -44,6 +40,10 @@ public class Tools {
 		AnchorPane.setTopAnchor(sv, y * hRatio);
 
 		return sv;
+	}
+
+	public static Font createNevisFont(double size, double sRatio) {
+		return Font.font("nevis", size * sRatio);
 	}
 
 	public static Font createRegularFont(double size, double sRatio) {
