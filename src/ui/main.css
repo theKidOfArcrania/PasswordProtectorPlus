@@ -11,7 +11,7 @@
 	-fx-font-size: 24px;
    -fx-font-family: 'nevis';
    -fx-fill: #818181;
-   -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 1.5, 0.0 , 0 , 1 );
+   -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 1.5, 0.0 , 0 , 1.5 );
 }
 .list-cell:filled:hover {
     -fx-background-color: #2d7df1;

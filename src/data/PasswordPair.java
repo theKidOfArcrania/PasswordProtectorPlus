@@ -26,7 +26,7 @@ public class PasswordPair {
 			// Load the username and password, which are encrypted.
 			String userName = decryptString(masterPassword, decrypter, dis);
 			String password = decryptString(masterPassword, decrypter, dis);
-
+			
 			return new PasswordPair(new String(description, "UTF-8"), userName, password);
 		} catch (GeneralSecurityException e) {
 			throw new IOException(e);
@@ -54,7 +54,7 @@ public class PasswordPair {
 	private static String decryptString(SecretKey key, Cipher decrypter, DataInputStream dis) throws GeneralSecurityException, IOException {
 		byte[] iv = new byte[decrypter.getBlockSize()];
 		dis.readFully(iv);
-
+		
 		int length = dis.readInt();
 		byte[] data = new byte[length];
 		dis.readFully(data);

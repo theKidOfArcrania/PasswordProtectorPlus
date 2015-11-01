@@ -4,19 +4,41 @@ package ui;
 import java.io.*;
 import java.util.*;
 
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import data.*;
 
 public class PracticePassword {
-	public static void main (String []args) throws IOException
+	private static ArrayList<PasswordPair> b;
+	public static void main (String []args)
 	{
+		b = new ArrayList<PasswordPair>();
 		String loginPass = "blehqwertqwerqwe";
-		List<PasswordPair> b = new ArrayList<PasswordPair>();
+		
 		b.add(new PasswordPair("A Practice Password","henryiscool","justkidding"));
 		b.add(new PasswordPair("Second try","see if this works","hmmm"));
-		SecretKeySpec keySpec = new SecretKeySpec(loginPass.getBytes(), "AES");
 		
+		SecretKeySpec keySpec = new SecretKeySpec(loginPass.getBytes(), "AES");
+		try {decrypt(keySpec);}
+		catch(IOException e)
+		{
+			System.out.println("writing bad");
+		}
+		try {encrypt(keySpec);}
+		catch(IOException e)
+		{
+			System.out.println("writing bad");
+		}
+		
+		b.clear();
+		
+		
+		
+
+	}
+	public static void encrypt(SecretKey keySpec)throws IOException
+	{
 		OutputStream out = new FileOutputStream("myfile.out");
 		out.write(b.size());
 		System.out.print("ArrayList before: ");
@@ -25,9 +47,12 @@ public class PracticePassword {
 			PasswordPair.encryptPasswordPair(keySpec, p, out);
 			System.out.print(p.getPassword()  + "  ");
 		}
+		out.close();
 		System.out.println();
-		b.clear();
-	
+	}
+	public static void decrypt(SecretKey keySpec) throws IOException
+	{
+		
 		InputStream in = new FileInputStream("myfile.out");
 		int numPass = in.read();
 		
@@ -40,8 +65,5 @@ public class PracticePassword {
 			System.out.print(p.getPassword() + "  ");
 		}
 		
-		
-		
-
 	}
 }
