@@ -59,6 +59,7 @@ public class PasswordProtector extends Application {
 	public static final Image SHINY_BACKGROUND = Tools.createImage("background.jpg");
 	public static final Image SETTINGS = Tools.createImage("setting.png");
 	public static final Image BACKGROUND = Tools.createImage("tile.png");
+	public static final Image DEFAULT_LIST = Tools.createImage("default-list.png");
 	public static final InnerShadow SMALL_SHADE = new InnerShadow(2.0, Color.BLACK);
 	public static final InnerShadow LARGE_SHADE = new InnerShadow(5.0, Color.BLACK);
 	public static final DropShadow OUT = new DropShadow(2.0, Color.BLACK);
@@ -304,9 +305,9 @@ public class PasswordProtector extends Application {
 		ImageView screw2 = Tools.createImageView(SCREW, 15, 15, 785, 0.0, sRatio, wRatio, hRatio, OUT);
 		ImageView screw3 = Tools.createImageView(SCREW, 15, 15, 1, 435, sRatio, wRatio, hRatio, OUT);
 		ImageView screw4 = Tools.createImageView(SCREW, 15, 15, 785,  435, sRatio, wRatio, hRatio, OUT);
-		//ImageView listViewDefault = Tools.createImageView(img, h, w, x, y, sRatio, wRatio, hRatio, g);
+		
+		ImageView listViewDefault = Tools.createImageView(DEFAULT_LIST, 500, 340, 25, 75, sRatio, wRatio, hRatio, null);
 		ImageView settings = Tools.createImageView(SETTINGS, 20, 20, 730, 1, sRatio, wRatio, hRatio, SMALL_SHADE);
-		settings.setOnMousePressed(e->reset());
 		
 		Text close = Tools.createText(770, 1, wRatio, hRatio, "X", Color.web("#2d7df1"), SMALL_SHADE, Tools.createNevisFont(18, sRatio));
 		Text minimize = Tools.createText(755, 5, wRatio, hRatio, "-", Color.web("#2d7df1"), SMALL_SHADE, Tools.createBoldFont(18, sRatio));
@@ -365,7 +366,7 @@ public class PasswordProtector extends Application {
 		Rectangle listFrame = Tools.createRoundedRectangle(350, 250, 2, 2, 20, 70, sRatio, wRatio, hRatio, Color.DARKGRAY.darker().darker(), OUT);
 		listFrame.setFill(new ImagePattern(SHINY_BACKGROUND));
 		list = new ListView<PasswordPair>();
-		list.setPlaceholder(null);
+		list.setPlaceholder(listViewDefault);
 		list.setItems(accountList);
 		list.setPrefWidth(340*wRatio);
 		list.setPrefHeight(240*hRatio);
@@ -373,11 +374,15 @@ public class PasswordProtector extends Application {
 		list.setLayoutY(75*hRatio);
 		list.setEffect(LARGE_SHADE);
 		list.setOnMouseClicked(e->{
-			int index = list.getFocusModel().getFocusedIndex();
+			int index = list.getSelectionModel().getSelectedIndex();
 			if(index!=-1)
 			{
 				userDisplay.setText(list.getFocusModel().getFocusedItem().getUserName());
 				passDisplay.setText(list.getFocusModel().getFocusedItem().getPassword());
+			}
+			else
+			{
+				update();
 			}
 		});
 		
@@ -431,8 +436,10 @@ public class PasswordProtector extends Application {
 		createButton.setOnMouseReleased(e->{
 			createButton.setEffect(OUT);
 		});
+		
 		remove.setOnMousePressed(e->{
 			removeButton.setEffect(LARGE_SHADE);
+			delete();
 		});
 		remove.setOnMouseReleased(e->{
 			removeButton.setEffect(OUT);
@@ -440,6 +447,7 @@ public class PasswordProtector extends Application {
 
 		removeButton.setOnMousePressed(e->{
 			removeButton.setEffect(LARGE_SHADE);
+			delete();
 		});
 		removeButton.setOnMouseReleased(e->{
 			removeButton.setEffect(OUT);
@@ -546,20 +554,31 @@ public class PasswordProtector extends Application {
 		addUser.setText("");
 		addPassword.setText("");
 		addDescription.setText("");
-		refresh();
+		update();
+	}
+	
+	public void delete()
+	{
+		if(list.getSelectionModel().getSelectedIndex()!=-1)
+		{
+			accountList.remove(list.getFocusModel().getFocusedIndex());
+			update();
+		}
 	}
 	
 	public void reset()
 	{
-		accountList.clear();
-		System.out.println("reset");
-		refresh();
+		accountList = FXCollections.observableArrayList();
+		list.setItems(accountList);
+		update();
 	}
 	
-	public void refresh()
+	public void update()
 	{
 		ObservableList<PasswordPair> temp = list.getItems();
 		list.setItems(null);
 		list.setItems(temp);
+		userDisplay.setText("");
+		passDisplay.setText("");
 	}
 }
