@@ -1,6 +1,7 @@
-package ui;
+package org.passwordprotector.ui;
 
-import ui.Tools;
+import org.passwordprotector.ui.Tools;
+
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.effect.InnerShadow;

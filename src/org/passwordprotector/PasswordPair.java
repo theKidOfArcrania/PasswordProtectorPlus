@@ -1,4 +1,4 @@
-package data;
+package org.passwordprotector;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -1,4 +1,4 @@
-package ui;
+package org.passwordprotector.ui;
 
 import java.awt.Dimension;
 import java.awt.DisplayMode;
@@ -13,7 +13,8 @@ import java.util.ArrayList;
 
 import javax.crypto.spec.SecretKeySpec;
 
-import data.PasswordPair;
+import org.passwordprotector.PasswordPair;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

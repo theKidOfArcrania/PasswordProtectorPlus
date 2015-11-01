@@ -1,4 +1,4 @@
-package ui;
+package org.passwordprotector.ui;
 
 
 import javafx.scene.effect.Effect;
