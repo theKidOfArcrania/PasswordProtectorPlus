@@ -27,6 +27,7 @@ import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -289,6 +290,7 @@ public class PasswordProtector extends Application {
 		mainScreen.initStyle(StageStyle.TRANSPARENT);
 		mainScreen.initModality(Modality.WINDOW_MODAL);
 		mainScreen.setFullScreen(true);
+		mainScreen.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		AnchorPane root = new AnchorPane(); 
 		Scene scene = new Scene(root, dispWidth, dispHeight);
 
