@@ -89,6 +89,7 @@ public class PasswordProtector extends Application {
 	private ImageView button;
 	private Text info;
 	private Text help;
+	private Stage back;
 	private Stage mainScreen;
 	private Stage loginScreen;
 	private Text userDisplay;
@@ -161,6 +162,7 @@ public class PasswordProtector extends Application {
 	 */
 	public void initMainScreen() {
 		loginScreen.close();
+		back.close();
 		mainScreen = new Stage();
 		mainScreen.initStyle(StageStyle.TRANSPARENT);
 		mainScreen.initModality(Modality.WINDOW_MODAL);
@@ -200,6 +202,7 @@ public class PasswordProtector extends Application {
 			}
 
 			mainScreen.close();
+			back.show();
 			loginScreen.show();
 		});
 
@@ -360,7 +363,7 @@ public class PasswordProtector extends Application {
 		primaryStage.setOpacity(0.0);
 
 		// Rim Creation
-		Stage back = initBack();
+		back = initBack();
 		back.initOwner(primaryStage);
 		back.show();
 		back.centerOnScreen();
