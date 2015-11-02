@@ -106,7 +106,7 @@ public class PasswordProtector extends Application {
 	}
 	
 	public PasswordProtector() {
-		//TO DO: create the help screen and the settings screen  to set the password and to reset all the files.
+		
 	}
 	
 	@Override
