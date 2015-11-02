@@ -354,26 +354,17 @@ public class PasswordProtector extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// Main Stage Creation
-		primaryStage.initStyle(StageStyle.TRANSPARENT);
-		Scene trans = new Scene(new AnchorPane(), dispWidth, dispHeight);
-		trans.setFill(null);
-		primaryStage.setScene(trans);
-		primaryStage.show();
-		primaryStage.setOpacity(0.0);
-
 		// Rim Creation
 		back = initBack();
-		back.initOwner(primaryStage);
 		back.show();
 		back.centerOnScreen();
 
 		// Intro Screen Creation
-		Stage s = initIntro(primaryStage);
-		s.setY(back.getY() + 10);
-		s.setX(back.getX() + 10);
-		s.initOwner(back);
-		s.show();
+		initIntro();
+		loginScreen.setY(back.getY() + 10);
+		loginScreen.setX(back.getX() + 10);
+		loginScreen.initOwner(back);
+		loginScreen.show();
 
 	}
 
@@ -425,7 +416,7 @@ public class PasswordProtector extends Application {
 		return primaryStage;
 	}
 
-	private Stage initIntro(Stage mainStage) {
+	private void initIntro() {
 
 		loginScreen = new Stage();
 		loginScreen.initStyle(StageStyle.TRANSPARENT);
@@ -471,10 +462,12 @@ public class PasswordProtector extends Application {
 		Text minimize = Tools.createText(355, 5, wRatio, hRatio, "-", Color.web("#2d7df1"), SMALL_SHADE, Tools.createBoldFont(18, sRatio));
 
 		close.setOnMousePressed(e -> {
-			mainStage.close();
+			loginScreen.close();
+			back.close();
 		});
 		minimize.setOnMousePressed(e -> {
-			mainStage.setIconified(true);
+			loginScreen.setIconified(true);
+			back.setIconified(true);
 		});
 		Text name = Tools.createText(0, 20, wRatio, hRatio, "PASSWORD PROTECTOR", Color.rgb(80, 215, 240), SMALL_SHADE, Tools.createNevisFont(24, sRatio));
 		name.setWrappingWidth(400 * wRatio);
@@ -523,8 +516,6 @@ public class PasswordProtector extends Application {
 		root.setBackground(new Background(BACK));
 		root.setEffect(LARGE_SHADE);
 		loginScreen.setScene(scene);
-
-		return loginScreen;
 
 	}
 }

@@ -4,10 +4,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -151,7 +151,7 @@ public class PasswordPair {
 		SecretKeySpec keySpec = new SecretKeySpec(passDigest, "AES");
 		Arrays.fill(passDigest, (byte) 0);
 
-		try (DataOutputStream out = new DataOutputStream(new FileOutputStream(accountsFile))) {
+		try (DataOutputStream out = new DataOutputStream(Files.newOutputStream(accountsFile.toPath()))) {
 			byte[] salt = new byte[8];
 			byte pepper;
 
