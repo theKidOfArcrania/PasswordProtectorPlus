@@ -70,7 +70,7 @@ public class PasswordProtector extends Application {
 			new BackgroundSize(BACKGROUND.getWidth() / 3, BACKGROUND.getHeight() / 3, false, false, false, false));
 	public final BackgroundImage BACK2 = new BackgroundImage(SHINY_BACKGROUND, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
 			new BackgroundSize(SHINY_BACKGROUND.getWidth(), SHINY_BACKGROUND.getHeight(), false, false, false, false));
-
+	public BackgroundImage listBack;
 	// Display res variables
 	private final DisplayMode defaultMode = getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
 	private final Dimension displayRes = new Dimension(defaultMode.getWidth(), defaultMode.getHeight());
@@ -211,15 +211,12 @@ public class PasswordProtector extends Application {
 		ImageView screw4 = Tools.createImageView(SCREW, 15, 15, 785, 435, sRatio, wRatio, hRatio, OUT);
 
 		ImageView listViewDefault = Tools.createImageView(DEFAULT_LIST, 500, 340, 25, 75, sRatio, wRatio, hRatio, null);
+		listViewDefault.setPreserveRatio(false);
 		ImageView settings = Tools.createImageView(SETTINGS, 20, 20, 730, 1, sRatio, wRatio, hRatio, SMALL_SHADE);
 		
 		
 		Text close = Tools.createText(770, 1, wRatio, hRatio, "X", Color.web("#2d7df1"), SMALL_SHADE, Tools.createNevisFont(18, sRatio));
 		Text minimize = Tools.createText(755, 5, wRatio, hRatio, "-", Color.web("#2d7df1"), SMALL_SHADE, Tools.createBoldFont(18, sRatio));
-		/*Circle c = new Circle(605 * wRatio, 22 * hRatio, 12 * sRatio, Color.rgb(230, 240, 240));
-		c.setEffect(LARGE_SHADE);
-		Text q = Tools.createText(600, 11, wRatio, hRatio, "?", Color.web("#2d7df1"), SMALL_SHADE, Tools.createNevisFont(20, sRatio));
-		*/
 		Text name = Tools.createText(0, 7, wRatio, hRatio, "PASSWORD PROTECTOR", Color.rgb(80, 215, 240), SMALL_SHADE, Tools.createNevisFont(28, sRatio));
 		name.setWrappingWidth(800 * wRatio);
 		name.setTextAlignment(TextAlignment.CENTER);
@@ -279,7 +276,6 @@ public class PasswordProtector extends Application {
 		Rectangle listFrame = Tools.createRoundedRectangle(350, 250, 2, 2, 20, 70, sRatio, wRatio, hRatio, Color.DARKGRAY.darker().darker(), OUT);
 		listFrame.setFill(new ImagePattern(SHINY_BACKGROUND));
 		list = new ListView<>();
-		list.setPlaceholder(listViewDefault);
 		list.setItems(accountList);
 		list.setPrefWidth(340 * wRatio);
 		list.setPrefHeight(240 * hRatio);
@@ -295,7 +291,9 @@ public class PasswordProtector extends Application {
 				update();
 			}
 		});
-
+		listBack = new BackgroundImage(DEFAULT_LIST, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT,
+				new BackgroundSize(list.getPrefWidth(),list.getPrefHeight(), false, false, false, false));
+		list.setBackground(new Background(listBack));
 		Text addDescript = Tools.createText(500, 44, wRatio, hRatio, "Modify Accounts", Color.web("#2d7df1"), SMALL_SHADE, Tools.createNevisFont(22, sRatio));
 
 		Text enterUsername = Tools.createText(465, 95, wRatio, hRatio, "Enter Username:", Color.BLACK, SMALL_SHADE, Tools.createNevisFont(18, sRatio));
