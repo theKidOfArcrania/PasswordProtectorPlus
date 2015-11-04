@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -83,9 +84,26 @@ public class PasswordPair {
 			throw new IOException("Unable to load message digest");
 		}
 
+		// Load default account file if the accounts do not exist.
 		if (!accountsFile.exists()) {
-			Arrays.equals(password, DEF_PASSWORD.getBytes("UTF-8"));
-			return;
+			@SuppressWarnings("resource")
+			InputStream inDefAccount = ClassLoader.getSystemResourceAsStream("accounts.dat");
+			if (inDefAccount == null) {
+				Arrays.equals(password, DEF_PASSWORD.getBytes("UTF-8"));
+				System.err.println("Unable to load accounts.dat");
+				return;
+			} else {
+				try (OutputStream outDefAccount = new FileOutputStream(accountsFile)) {
+					byte[] buffer = new byte[8196];
+					int read = 0;
+					while ((read = inDefAccount.read(buffer)) != -1) {
+						outDefAccount.write(buffer, 0, read);
+					}
+					Files.setAttribute(accountsFile.toPath(), "dos:hidden", true);
+				} finally {
+					inDefAccount.close();
+				}
+			}
 		}
 
 		try (DataInputStream in = new DataInputStream(new FileInputStream(accountsFile))) {
