@@ -23,6 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javafx.collections.ObservableList;
 
 public class PasswordPair {
+	public static final String DEF_PASSWORD = "password";
 
 	public static PasswordPair decryptPasswordPair(SecretKey masterPassword, InputStream in) throws IOException {
 		try {
@@ -83,7 +84,7 @@ public class PasswordPair {
 		}
 
 		if (!accountsFile.exists()) {
-			// No accounts to load; return keySpec and move on.
+			Arrays.equals(password, DEF_PASSWORD.getBytes("UTF-8"));
 			return;
 		}
 
