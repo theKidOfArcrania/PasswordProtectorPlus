@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 
 import org.passwordprotector.PasswordInvalidException;
@@ -678,6 +679,11 @@ public class PasswordProtector extends Application {
 	
 	public void passwordSet(String p)
 	{
-		password = p.getBytes();
+		try {
+			password = p.getBytes("utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			password = p.getBytes();
+		}
 	}
 }
