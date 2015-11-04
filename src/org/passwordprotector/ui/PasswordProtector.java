@@ -28,6 +28,7 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.ImagePattern;
@@ -81,17 +82,22 @@ public class PasswordProtector extends Application {
 	// The controls.
 	private PasswordField passwordField;
 	private TextField addUser;
-	private TextField addPassword;
+	private PasswordField addPassword;
 	private TextField addDescription;
+	private PasswordField setPassword;
+	private PasswordField confirmPassword;
 	private Text errorUser;
 	private Text errorPassword;
 	private Text errorDescript;
+	private Text errorLoginSet;
 	private ImageView button;
 	private Text info;
 	private Text help;
+	private Stage transparent;
 	private Stage back;
 	private Stage mainScreen;
 	private Stage loginScreen;
+	private Stage settings;
 	private Text userDisplay;
 	private Text passDisplay;
 	private ListView<PasswordPair> list;
@@ -114,7 +120,31 @@ public class PasswordProtector extends Application {
 			update();
 		}
 	}
-
+	public void checkLoginSet()
+	{
+		boolean check = true;
+		if(setPassword.getText().equals(""))
+		{
+			errorLoginSet.setText("Enter a login password");
+			return;
+		}
+		else{
+			errorLoginSet.setText("");
+		}
+		if(!setPassword.getText().equals(confirmPassword.getText()))
+		{
+			errorLoginSet.setText("Passwords are not equal");
+			return;
+		}
+		else{
+			errorLoginSet.setText("");
+		}
+		if(!check)return;
+		
+		passwordSet(setPassword.getText());
+		setPassword.setText("");
+		confirmPassword.setText("");
+	}
 	public void generateNewAccount() {
 		String tempUser = addUser.getText();
 		String tempPass = addPassword.getText();
@@ -180,12 +210,14 @@ public class PasswordProtector extends Application {
 
 		ImageView listViewDefault = Tools.createImageView(DEFAULT_LIST, 500, 340, 25, 75, sRatio, wRatio, hRatio, null);
 		ImageView settings = Tools.createImageView(SETTINGS, 20, 20, 730, 1, sRatio, wRatio, hRatio, SMALL_SHADE);
-
+		
+		
 		Text close = Tools.createText(770, 1, wRatio, hRatio, "X", Color.web("#2d7df1"), SMALL_SHADE, Tools.createNevisFont(18, sRatio));
 		Text minimize = Tools.createText(755, 5, wRatio, hRatio, "-", Color.web("#2d7df1"), SMALL_SHADE, Tools.createBoldFont(18, sRatio));
-		Circle c = new Circle(605 * wRatio, 22 * hRatio, 12 * sRatio, Color.rgb(230, 240, 240));
+		/*Circle c = new Circle(605 * wRatio, 22 * hRatio, 12 * sRatio, Color.rgb(230, 240, 240));
 		c.setEffect(LARGE_SHADE);
 		Text q = Tools.createText(600, 11, wRatio, hRatio, "?", Color.web("#2d7df1"), SMALL_SHADE, Tools.createNevisFont(20, sRatio));
+		*/
 		Text name = Tools.createText(0, 7, wRatio, hRatio, "PASSWORD PROTECTOR", Color.rgb(80, 215, 240), SMALL_SHADE, Tools.createNevisFont(28, sRatio));
 		name.setWrappingWidth(800 * wRatio);
 		name.setTextAlignment(TextAlignment.CENTER);
@@ -208,7 +240,12 @@ public class PasswordProtector extends Application {
 
 		Rectangle panel = Tools.createRoundedRectangle(10, 20, 5, 5, 755, 0, sRatio, wRatio, hRatio, Color.rgb(100, 100, 100, 0), null);
 		panel.setOnMousePressed(e -> mainScreen.setIconified(true));
-
+		
+		Rectangle settingsPanel = Tools.createRoundedRectangle(15, 20, 5, 5, 733, 0, sRatio, wRatio, hRatio, Color.rgb(100, 100, 100,0), null);
+		settingsPanel.setOnMouseClicked(e->{
+			initSettings();
+		});
+		
 		Text username = Tools.createText(45, 347, wRatio, hRatio, "Username: ", Color.rgb(10, 10, 20), SMALL_SHADE, Tools.createNevisFont(20, sRatio));
 		Text password = Tools.createText(45, 377, wRatio, hRatio, "Password: ", Color.rgb(10, 10, 20), SMALL_SHADE, Tools.createNevisFont(20, sRatio));
 
@@ -264,7 +301,7 @@ public class PasswordProtector extends Application {
 		Text enterDescription = Tools.createText(465, 245, wRatio, hRatio, "Enter Description:", Color.BLACK, SMALL_SHADE, Tools.createNevisFont(18, sRatio));
 
 		addUser = new TextField();
-		addPassword = new TextField();
+		addPassword = new PasswordField();
 		addDescription = new TextField();
 
 		addUser.setLayoutX(450 * wRatio);
@@ -339,7 +376,9 @@ public class PasswordProtector extends Application {
 		errorDescript = Tools.createText(620, 250, wRatio, hRatio, "", Color.web("d31414"), SMALL_SHADE, Tools.createNevisFont(10, sRatio));
 
 		root.setBackground(new Background(BACK));
-		root.getChildren().addAll(screw1, screw2, screw3, screw4, settings, listFrame, list, c, q, display, username, userDisplay, password, passDisplay, addDescript, addContainer, enterUsername, enterPassword, enterDescription, errorUser, errorPassword, errorDescript, addUser, addPassword, addDescription, viewDescript, name, close, minimize, panel, createButton, create, removeButton, remove);
+		root.getChildren().addAll(screw1, screw2, screw3, screw4, settings, listFrame, list, display, username, userDisplay, password, 
+				passDisplay, addDescript, addContainer, enterUsername, enterPassword, enterDescription, errorUser, errorPassword, errorDescript,
+				addUser, addPassword, addDescription, viewDescript, name, close, minimize, panel, settingsPanel, createButton, create, removeButton, remove);
 
 		mainScreen.setScene(scene);
 		mainScreen.initOwner(loginScreen);
@@ -415,7 +454,7 @@ public class PasswordProtector extends Application {
 
 		return primaryStage;
 	}
-
+	
 	private void initIntro() {
 
 		loginScreen = new Stage();
@@ -517,5 +556,128 @@ public class PasswordProtector extends Application {
 		root.setEffect(LARGE_SHADE);
 		loginScreen.setScene(scene);
 
+	}
+	
+	private void initSettings()
+	{
+		transparent = new Stage();
+		transparent.initStyle(StageStyle.TRANSPARENT);
+		transparent.initOwner(mainScreen);
+		transparent.initModality(Modality.WINDOW_MODAL);
+		VBox roottrans = new VBox();
+		roottrans.setBackground(null);
+		Scene scenetrans = new Scene(roottrans, dispWidth, dispHeight+500);
+		scenetrans.setFill(Color.rgb(180, 200, 220,.3));
+		transparent.setScene(scenetrans);
+		transparent.show();
+		
+		settings = new Stage();
+		settings.initStyle(StageStyle.TRANSPARENT);
+		settings.initOwner(transparent);
+		
+		AnchorPane root = new AnchorPane();
+		Scene scene = new Scene(root, 300 * wRatio, 340 * hRatio);
+		
+		Text name = Tools.createText(0, 10, wRatio, hRatio, "Settings", Color.web("#2d7df1"), SMALL_SHADE, Tools.createNevisFont(26, sRatio));
+		name.setWrappingWidth(300 * wRatio);
+		name.setTextAlignment(TextAlignment.CENTER);
+		
+		ImageView screw1 = Tools.createImageView(SCREW, 10, 10, 1, 0.0, sRatio, wRatio, hRatio, OUT);
+		ImageView screw2 = Tools.createImageView(SCREW, 10, 10, 290, 0.0, sRatio, wRatio, hRatio, OUT);
+		ImageView screw3 = Tools.createImageView(SCREW, 10, 10, 1, 330, sRatio, wRatio, hRatio, OUT);
+		ImageView screw4 = Tools.createImageView(SCREW, 10, 10, 290, 330, sRatio, wRatio, hRatio, OUT);
+		
+		setPassword = new PasswordField();
+		confirmPassword = new PasswordField();
+		confirmPassword.setLayoutX(20 * wRatio);
+		confirmPassword.setLayoutY(135 * hRatio);
+		confirmPassword.setPrefSize(260 * wRatio, 15 * hRatio);
+		confirmPassword.setFont(Tools.createNevisFont(14, sRatio));
+		confirmPassword.setEffect(SMALL_SHADE);
+
+		setPassword.setLayoutX(20 * wRatio);
+		setPassword.setLayoutY(75 * hRatio);
+		setPassword.setPrefSize(260 * wRatio, 15 * hRatio);
+		setPassword.setFont(Tools.createNevisFont(14, sRatio));
+		setPassword.setEffect(SMALL_SHADE);
+		
+		Text setLogin = Tools.createText(0, 50, wRatio, hRatio, "New Login Password:", Color.BLACK, SMALL_SHADE, Tools.createNevisFont(18, sRatio));
+		setLogin.setWrappingWidth(300*wRatio);
+		setLogin.setTextAlignment(TextAlignment.CENTER);
+		Text confirmLogin = Tools.createText(0, 110, wRatio, hRatio, "Confirm Login Password:", Color.BLACK, SMALL_SHADE, Tools.createNevisFont(18, sRatio));
+		confirmLogin.setWrappingWidth(300*wRatio);
+		confirmLogin.setTextAlignment(TextAlignment.CENTER);
+		Text resetDescript = Tools.createText(0, 255, wRatio, hRatio, "Reset All Passwords", Color.BLACK, SMALL_SHADE, Tools.createNevisFont(18, sRatio));
+		resetDescript.setWrappingWidth(300*wRatio);
+		resetDescript.setTextAlignment(TextAlignment.CENTER);
+		
+		Stop[] grad1 = { new Stop(0.0, Color.web("#cdddf6")), new Stop(0.2, Color.web("#2d7df1")), new Stop(.45, Color.web("#2d7df1")),
+				new Stop(.55, Color.web("#1b61c8")), new Stop(1.0, Color.web("#3a75cb")) };
+		LinearGradient loginGrad = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, grad1);
+		Stop[] grad2 = { new Stop(0.0, Color.web("f6d4d4")), new Stop(0.2, Color.web("ec2f2f")), new Stop(.45, Color.web("ec2f2f")),
+				new Stop(.55, Color.web("d31414")), new Stop(1.0, Color.web("d63737")) };
+		LinearGradient resetGrad = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, grad2);
+		
+		Rectangle loginSetButton = Tools.createRoundedRectangle(140, 35, 20, 20, 80, 175, sRatio, wRatio, hRatio, Color.DARKGRAY.darker().darker(), OUT);
+		Rectangle resetButton = Tools.createRoundedRectangle(140, 35, 20, 20, 80, 280, sRatio, wRatio, hRatio, Color.DARKGRAY.darker().darker(), OUT);
+		Text loginSet = Tools.createText(0, 180, wRatio, hRatio, "Set Password", Color.WHITE, SMALL_SHADE, Tools.createNevisFont(18, sRatio));
+		loginSet.setWrappingWidth(300*wRatio);
+		loginSet.setTextAlignment(TextAlignment.CENTER);
+		Text reset = Tools.createText(0, 285, wRatio, hRatio, "Reset List", Color.WHITE, SMALL_SHADE, Tools.createNevisFont(22, sRatio));
+		reset.setWrappingWidth(300*wRatio);
+		reset.setTextAlignment(TextAlignment.CENTER);
+		
+		loginSet.setOnMousePressed(e -> {
+			loginSetButton.setEffect(LARGE_SHADE);
+			checkLoginSet();
+		});
+		loginSet.setOnMouseReleased(e -> {
+			loginSetButton.setEffect(OUT);
+		});
+		loginSetButton.setOnMousePressed(e -> {
+			loginSetButton.setEffect(LARGE_SHADE);
+			checkLoginSet();
+		});
+		loginSetButton.setOnMouseReleased(e -> {
+			loginSetButton.setEffect(OUT);
+		});
+
+		reset.setOnMousePressed(e -> {
+			resetButton.setEffect(LARGE_SHADE);
+			reset();
+		});
+		reset.setOnMouseReleased(e -> {
+			resetButton.setEffect(OUT);
+		});
+
+		resetButton.setOnMousePressed(e -> {
+			resetButton.setEffect(LARGE_SHADE);
+			reset();
+		});
+		resetButton.setOnMouseReleased(e -> {
+			resetButton.setEffect(OUT);
+		});
+		resetButton.setFill(resetGrad);
+		loginSetButton.setFill(loginGrad);
+		
+		errorLoginSet = Tools.createText(0, 220, wRatio, hRatio, "", Color.web("d31414"), SMALL_SHADE, Tools.createNevisFont(12, sRatio));
+		errorLoginSet.setWrappingWidth(300*wRatio);
+		errorLoginSet.setTextAlignment(TextAlignment.CENTER);
+		
+		root.getChildren().addAll(screw1, screw2, screw3,screw4,name, confirmPassword, setPassword, errorLoginSet, setLogin, confirmLogin, resetDescript, resetButton, loginSetButton,reset, loginSet);
+		root.setBackground(new Background(BACK2));
+		root.setEffect(new InnerShadow(3.0, Color.BLACK));
+		settings.setScene(scene);
+		settings.show();
+		transparent.getScene().setOnMouseClicked(e->{
+			transparent.close();
+			settings.close();
+		});
+
+	}
+	
+	public void passwordSet(String p)
+	{
+		password = p.getBytes();
 	}
 }
