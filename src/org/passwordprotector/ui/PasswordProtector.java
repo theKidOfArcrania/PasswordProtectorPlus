@@ -145,6 +145,7 @@ public class PasswordProtector extends Application {
 		passwordSet(setPassword.getText());
 		setPassword.setText("");
 		confirmPassword.setText("");
+		errorLoginSet.setText("Successfully Changed Password");
 	}
 	public void generateNewAccount() {
 		String tempUser = addUser.getText();
